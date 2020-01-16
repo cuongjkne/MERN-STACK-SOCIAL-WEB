@@ -1,0 +1,6 @@
+{
+  "mongoURI": "mongodb+srv://jim:Hello123!@cluster0-i3jsl.gcp.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "hello",
+  "githubClientId": "a7db94d026eaf6e70166",
+  "githubSecret": "2cd17b7352db71ec873202478b91c63eb5599757"
+}
