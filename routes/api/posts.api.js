@@ -90,7 +90,8 @@ router.delete('/:post_id', auth, async (req, res) => {
       return res.status(401).json({ msg: 'User not authorized' });
     }
     await Post.findOneAndRemove({ _id: req.params.post_id });
-    res.json(post);
+
+    res.send({msg:"Deleted Successfully"});
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
@@ -178,7 +179,7 @@ router.post(
 );
 
 // @route   DELETE api/posts/comment/:post_id/:comment_id
-// @desc    Delete a post
+// @desc    Delete comment
 // @access  Private
 router.delete('/comment/:post_id/:comment_id', auth, async (req, res) => {
   try {
@@ -186,16 +187,21 @@ router.delete('/comment/:post_id/:comment_id', auth, async (req, res) => {
     if (!post) {
       return res.status(404).json({ msg: 'Post not found' });
     }
+    // Pull out comment
+    const comment = post.comments.find(
+      comment => comment.id === req.params.comment_id
+      );
+    if (!comment) {
+        return res.status(404).json({ msg: 'Comment not found' });
+      }
+
     // Get index comment
     const removeIndex = post.comments.findIndex(
-      comment => comment._id.toString() === req.params.comment_id
+      comment => comment.id === req.params.comment_id
     );
-    //Check comment
-    if (removeIndex < 0) {
-      return res.status(404).json({ msg: 'Comment not found' });
-    }
-    //Check user
-    if (post.user !== req.user.id) {
+
+    //Check user  !!User owns this post or this comment can delete
+    if (comment.user !== req.user.id && post.user !== req.user.id) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
 

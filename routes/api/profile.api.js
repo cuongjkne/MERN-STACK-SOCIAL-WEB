@@ -63,6 +63,8 @@ router.post(
     const profileFields = {};
 
     profileFields.user = req.user.id;
+    
+    //Check if fields are null
     const isNull = (...fields) => {
       fields.forEach(ele => {
         const field = eval(ele);
