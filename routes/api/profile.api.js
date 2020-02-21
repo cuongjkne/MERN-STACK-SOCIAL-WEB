@@ -63,15 +63,15 @@ router.post(
     const profileFields = {};
 
     profileFields.user = req.user.id;
-    
+
     //Check if fields are null
     const isNull = (...fields) => {
-      fields.forEach(ele => {
-        const field = eval(ele);
-        if (field) {
-          profileFields[ele] = field;
-        } else if (ele === 'social') {
-          profileFields[ele] = field;
+      fields.forEach((field) => {
+        const value = eval(field);
+        if (value) {
+          profileFields[field] = value;
+        } else if (field === 'social') {
+          profileFields[field] = value;
         }
       });
     };
@@ -86,7 +86,7 @@ router.post(
     );
 
     if (skills) {
-      profileFields.skills = skills.split(',').map(skill => skill.trim());
+      profileFields.skills = skills.split(',').map((skill) => skill.trim());
     }
     try {
       let profile = await Profile.findOne({ user: req.user.id });
@@ -234,7 +234,7 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
     const profile = await Profile.findOne({ user: req.user.id });
     // Get remove index
     const removeIndex = profile.experience
-      .map(item => item._id)
+      .map((item) => item._id)
       .indexOf(req.params.exp_id);
 
     if (removeIndex < 0) {
@@ -319,7 +319,7 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
     const profile = await Profile.findOne({ user: req.user.id });
     // Get remove index
     const removeIndex = profile.education
-      .map(item => item._id)
+      .map((item) => item._id)
       .indexOf(req.params.edu_id);
 
     if (removeIndex < 0) {

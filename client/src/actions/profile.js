@@ -19,3 +19,15 @@ export const getCurrentProfile = () => async (dispatch) => {
     });
   }
 };
+
+// Create profile
+export const createProfile = () => async (dispatch) => {
+  const config = {
+    header: {
+      'Content-Type': 'application/json'
+    }
+  };
+  const body = {};
+  try {
+  } catch (err) {}
+};
