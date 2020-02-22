@@ -5,24 +5,11 @@ import PropTypes from 'prop-types';
 
 import { createProfile } from '../../actions/profile';
 
-const CreatProfile = ({ createProfile, history }) => {
+const EditProfile = ({ createProfile, profile }) => {
   const [formData, setFormData] = useState({
-    company: '',
-    website: '',
-    location: '',
-    status: '',
-    skills: '',
-    githubusername: '',
-    bio: '',
-    social: {
-      facebook: '',
-      linkedin: '',
-      youtube: '',
-      instagram: '',
-      twitter: ''
-    }
+    ...profile
   });
-
+  console.log(formData);
   const {
     company,
     website,
@@ -53,7 +40,7 @@ const CreatProfile = ({ createProfile, history }) => {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    createProfile(formData, history);
+    createProfile(formData, null, true);
   };
   return (
     <Fragment>
@@ -234,7 +221,12 @@ const CreatProfile = ({ createProfile, history }) => {
     </Fragment>
   );
 };
-CreatProfile.propTypes = {
-  createProfile: PropTypes.func.isRequired
+EditProfile.propTypes = {
+  createProfile: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired
 };
-export default connect(null, { createProfile })(withRouter(CreatProfile));
+
+const mapStateToProps = (state) => ({
+  profile: state.profile.profile
+});
+export default connect(mapStateToProps, { createProfile })(EditProfile);

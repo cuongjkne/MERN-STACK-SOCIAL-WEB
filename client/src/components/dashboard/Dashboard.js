@@ -23,7 +23,11 @@ const Dashboard = ({
         <i className='fas fa-user'></i> Welcome {user && user.name}
       </p>
       {profile !== null ? (
-        <Fragment>ha</Fragment>
+        <Fragment>
+          <Link to='/edit-profile' className='btn btn-primary my-1'>
+            Edit your profile
+          </Link>
+        </Fragment>
       ) : (
         <Fragment>
           <p>Haven't yet setup your profile</p>
