@@ -71,7 +71,7 @@ const CreatProfile = ({ createProfile, history }) => {
             onChange={(e) => onChange(e)}
             required
           >
-            <option value='0'>* Select Professional Status</option>
+            <option value=''>* Select Professional Status</option>
             <option value='Developer'>Developer</option>
             <option value='Junior Developer'>Junior Developer</option>
             <option value='Senior Developer'>Senior Developer</option>
@@ -227,9 +227,9 @@ const CreatProfile = ({ createProfile, history }) => {
         )}
 
         <input type='submit' className='btn btn-primary my-1' />
-        <a className='btn btn-light my-1' href='dashboard.html'>
+        <Link className='btn btn-light my-1' to='/dashboard'>
           Go Back
-        </a>
+        </Link>
       </form>
     </Fragment>
   );

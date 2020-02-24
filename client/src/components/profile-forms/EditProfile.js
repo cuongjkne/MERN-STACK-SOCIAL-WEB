@@ -6,11 +6,14 @@ import PropTypes from 'prop-types';
 import { createProfile } from '../../actions/profile';
 
 const EditProfile = ({ createProfile, profile }) => {
+  if (Array.isArray(profile.skills)) {
+    profile.skills = profile.skills.join(',');
+  }
+
   const [formData, setFormData] = useState({
     ...profile
   });
-  console.log(formData);
-  const {
+  let {
     company,
     website,
     location,
@@ -58,7 +61,7 @@ const EditProfile = ({ createProfile, profile }) => {
             onChange={(e) => onChange(e)}
             required
           >
-            <option value='0'>* Select Professional Status</option>
+            <option value=''>* Select Professional Status</option>
             <option value='Developer'>Developer</option>
             <option value='Junior Developer'>Junior Developer</option>
             <option value='Senior Developer'>Senior Developer</option>
@@ -214,9 +217,9 @@ const EditProfile = ({ createProfile, profile }) => {
         )}
 
         <input type='submit' className='btn btn-primary my-1' />
-        <a className='btn btn-light my-1' href='dashboard.html'>
+        <Link className='btn btn-light my-1' to='/create-profile'>
           Go Back
-        </a>
+        </Link>
       </form>
     </Fragment>
   );
