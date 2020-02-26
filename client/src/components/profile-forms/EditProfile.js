@@ -1,18 +1,34 @@
-import React, { useState, Fragment } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React, { useState, Fragment, useEffect } from 'react';
+import { Link, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { createProfile } from '../../actions/profile';
+import { createOrEditProfile } from '../../actions/profile';
+import Spinner from '../layout/Spinner';
 
-const EditProfile = ({ createProfile, profile }) => {
-  if (Array.isArray(profile.skills)) {
-    profile.skills = profile.skills.join(',');
-  }
-
-  const [formData, setFormData] = useState({
+const EditProfile = ({
+  createOrEditProfile,
+  profile: { profile, loading }
+}) => {
+  let [formData, setFormData] = useState({
     ...profile
   });
+
+  const [statusDisplay, toggleStatusDisplaySocial] = useState(false);
+
+  // 2 problems make errors
+  // - profile hasn't yet loaded => profile = null
+  // - useState not updated formData although profile loaded => formData = {}
+  if (Object.keys(formData).length === 0) formData = { ...profile };
+  if (loading) {
+    return <Spinner />;
+  }
+  if (!loading && profile === null) {
+    return <Redirect to='/dashboard' />;
+  }
+  if (formData.skills.constructor === Array) {
+    formData.skills = formData.skills.join(',');
+  }
   let {
     company,
     website,
@@ -24,8 +40,6 @@ const EditProfile = ({ createProfile, profile }) => {
     social,
     social: { facebook, linkedin, youtube, instagram, twitter }
   } = formData;
-
-  const [statusDisplay, toggleStatusDisplaySocial] = useState(false);
   const onChange = (e) => {
     setFormData({
       ...formData,
@@ -42,8 +56,10 @@ const EditProfile = ({ createProfile, profile }) => {
     });
   };
   const onSubmit = (e) => {
+    console.log(2);
+    createOrEditProfile(formData, null, true);
+
     e.preventDefault();
-    createProfile(formData, null, true);
   };
   return (
     <Fragment>
@@ -217,7 +233,7 @@ const EditProfile = ({ createProfile, profile }) => {
         )}
 
         <input type='submit' className='btn btn-primary my-1' />
-        <Link className='btn btn-light my-1' to='/create-profile'>
+        <Link className='btn btn-light my-1' to='/dashboard'>
           Go Back
         </Link>
       </form>
@@ -225,11 +241,11 @@ const EditProfile = ({ createProfile, profile }) => {
   );
 };
 EditProfile.propTypes = {
-  createProfile: PropTypes.func.isRequired,
+  createOrEditProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => ({
-  profile: state.profile.profile
+  profile: state.profile
 });
-export default connect(mapStateToProps, { createProfile })(EditProfile);
+export default connect(mapStateToProps, { createOrEditProfile })(EditProfile);

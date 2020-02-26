@@ -1,11 +1,15 @@
 import React, { useState, Fragment } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { createProfile } from '../../actions/profile';
+import { createOrEditProfile } from '../../actions/profile';
 
-const CreatProfile = ({ createProfile, history }) => {
+const CreatProfile = ({
+  createOrEditProfile,
+  history,
+  profile: { profile, loading }
+}) => {
   const [formData, setFormData] = useState({
     company: '',
     website: '',
@@ -22,7 +26,10 @@ const CreatProfile = ({ createProfile, history }) => {
       twitter: ''
     }
   });
-
+  const [statusDisplay, toggleStatusDisplaySocial] = useState(false);
+  if (profile !== null) {
+    return <Redirect to='/dashboard' />;
+  }
   const {
     company,
     website,
@@ -35,7 +42,6 @@ const CreatProfile = ({ createProfile, history }) => {
     social: { facebook, linkedin, youtube, instagram, twitter }
   } = formData;
 
-  const [statusDisplay, toggleStatusDisplaySocial] = useState(false);
   const onChange = (e) => {
     setFormData({
       ...formData,
@@ -53,7 +59,7 @@ const CreatProfile = ({ createProfile, history }) => {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    createProfile(formData, history);
+    createOrEditProfile(formData, history);
   };
   return (
     <Fragment>
@@ -235,6 +241,13 @@ const CreatProfile = ({ createProfile, history }) => {
   );
 };
 CreatProfile.propTypes = {
-  createProfile: PropTypes.func.isRequired
+  createOrEditProfile: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired
 };
-export default connect(null, { createProfile })(withRouter(CreatProfile));
+
+const mapStateToProps = (state) => ({
+  profile: state.profile
+});
+export default connect(mapStateToProps, { createOrEditProfile })(
+  withRouter(CreatProfile)
+);
