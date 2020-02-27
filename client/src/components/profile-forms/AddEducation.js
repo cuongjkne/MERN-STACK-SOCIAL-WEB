@@ -1,11 +1,15 @@
 import React, { Fragment, useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { addExOrEdu } from '../../actions/profile';
 
-const AddEducation = ({ addExOrEdu, history }) => {
+const AddEducation = ({
+  addExOrEdu,
+  history,
+  profile: { loading, profile }
+}) => {
   const [formData, setFormData] = useState({
     school: '',
     degree: '',
@@ -41,6 +45,9 @@ const AddEducation = ({ addExOrEdu, history }) => {
 
     addExOrEdu(formData, history, 'Education');
   };
+  if (!loading && profile === null) {
+    return <Redirect to='/dashboard' />;
+  }
   return (
     <Fragment>
       <h1 class='large text-primary'>Add Your Education</h1>
@@ -134,9 +141,9 @@ AddEducation.protoTypes = {
   addExOrEdu: PropTypes.func.isRequired
 };
 
-// const mapStateToProps = (state) => ({
-//   profile: state.profile
-// });
-export default connect(null, { addExOrEdu })(withRouter(AddEducation));
-
-//TODO: 1.delete experience and education 2. Middleware access url
+const mapStateToProps = (state) => ({
+  profile: state.profile
+});
+export default connect(mapStateToProps, { addExOrEdu })(
+  withRouter(AddEducation)
+);

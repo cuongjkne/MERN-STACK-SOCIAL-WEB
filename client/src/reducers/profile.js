@@ -2,9 +2,7 @@ import {
   PROFILE_ERROR,
   GET_PROFILE,
   CLEAR_PROFILE,
-  EDIT_PROFILE_SUCCESSFULLY,
-  CREATE_PROFILE_SUCCESSFULLY,
-  ADD_SUCCESSFULLY
+  UPDATE_PROFILE
 } from '../actions/types';
 
 const initialState = {
@@ -19,9 +17,7 @@ export default function(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
-    case ADD_SUCCESSFULLY:
-    case CREATE_PROFILE_SUCCESSFULLY:
-    case EDIT_PROFILE_SUCCESSFULLY:
+    case UPDATE_PROFILE:
     case GET_PROFILE:
       return {
         ...state,

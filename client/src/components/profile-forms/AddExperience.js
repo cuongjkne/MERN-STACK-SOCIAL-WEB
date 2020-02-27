@@ -1,11 +1,15 @@
 import React, { Fragment, useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { addExOrEdu } from '../../actions/profile';
 
-const AddExperience = ({ addExOrEdu, history }) => {
+const AddExperience = ({
+  addExOrEdu,
+  history,
+  profile: { loading, profile }
+}) => {
   const [formData, setFormData] = useState({
     title: '',
     company: '',
@@ -32,6 +36,9 @@ const AddExperience = ({ addExOrEdu, history }) => {
     e.preventDefault();
     addExOrEdu(formData, history, 'Experience');
   };
+  if (!loading && profile === null) {
+    return <Redirect to='/dashboard' />;
+  }
   return (
     <Fragment>
       <h1 className='large text-primary'>Add An Experience</h1>
@@ -124,7 +131,9 @@ AddExperience.protoTypes = {
   addExOrEdu: PropTypes.func.isRequired
 };
 
-// const mapStateToProps = (state) => ({
-//   profile: state.profile
-// });
-export default connect(null, { addExOrEdu })(withRouter(AddExperience));
+const mapStateToProps = (state) => ({
+  profile: state.profile
+});
+export default connect(mapStateToProps, { addExOrEdu })(
+  withRouter(AddExperience)
+);
