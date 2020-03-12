@@ -6,7 +6,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
+//MODEL
 const User = require('../../models/User');
+
 // @route   POST api/users
 // @desc    Resgister user
 // @access  Public
@@ -19,8 +21,8 @@ router.post(
     check('email', 'Please include a valid email').isEmail(),
     check(
       'password',
-      'Please enter a password with 6 or more characters'
-    ).isLength({ min: 6 })
+      'Please enter a password with 6 or more characters',
+    ).isLength({ min: 6 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -42,13 +44,13 @@ router.post(
       const avatar = gravatar.url(email, {
         s: '200',
         r: 'pg',
-        d: 'mm'
+        d: 'mm',
       });
       user = new User({
         name,
         email,
         avatar,
-        password
+        password,
       });
 
       // Encrypt password
@@ -58,8 +60,8 @@ router.post(
       // Return jsonwebtoken
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
 
       jwt.sign(
@@ -69,12 +71,12 @@ router.post(
         (err, token) => {
           if (err) throw err;
           res.json({ token });
-        }
+        },
       );
     } catch (err) {
       console.log(err.message);
       res.status.send('Server error!');
     }
-  }
+  },
 );
 module.exports = router;

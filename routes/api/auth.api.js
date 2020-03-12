@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator');
 const config = require('config');
 
 const User = require('../../models/User');
-const auth = require('../../middleware/auth.middle');
+const auth = require('../middleware/auth.middle');
 
 // @route   GET api/auth
 // @desc    load user
@@ -28,7 +28,7 @@ router.post(
   '/',
   [
     check('email', 'Please include a valid email').isEmail(),
-    check('password', 'Password is required').exists()
+    check('password', 'Password is required').exists(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -56,8 +56,8 @@ router.post(
       // Return jsonwebtoken
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
 
       jwt.sign(
@@ -67,12 +67,12 @@ router.post(
         (err, token) => {
           if (err) throw err;
           res.json({ token });
-        }
+        },
       );
     } catch (err) {
       console.log(err.message);
       res.status.send('Server error!');
     }
-  }
+  },
 );
 module.exports = router;

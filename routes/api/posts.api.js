@@ -3,7 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require('express-validator');
 
 const Post = require('../../models/Post');
-const auth = require('../../middleware/auth.middle');
+const auth = require('../middleware/auth.middle');
 
 // @route   POST api/posts
 // @desc    Create a post
@@ -15,8 +15,8 @@ router.post(
     [
       check('text', 'Text is required')
         .not()
-        .isEmpty()
-    ]
+        .isEmpty(),
+    ],
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -31,7 +31,7 @@ router.post(
         text: req.body.text,
         name: user.name,
         avatar: user.avatar,
-        user: req.user.id
+        user: req.user.id,
       };
 
       let post = new Post(newComment);
@@ -41,7 +41,7 @@ router.post(
       console.error(err.message);
       res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 // @route   GET  api/posts
@@ -91,7 +91,7 @@ router.delete('/:post_id', auth, async (req, res) => {
     }
     await Post.findOneAndRemove({ _id: req.params.post_id });
 
-    res.send({msg:"Deleted Successfully"});
+    res.send({ msg: 'Deleted Successfully' });
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
@@ -142,8 +142,8 @@ router.post(
     [
       check('text', 'Text is required')
         .not()
-        .isEmpty()
-    ]
+        .isEmpty(),
+    ],
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -161,7 +161,7 @@ router.post(
         text: req.body.text,
         name: user.name,
         avatar: user.avatar,
-        user: req.user.id
+        user: req.user.id,
       };
 
       await post.comments.unshift(newComment);
@@ -175,7 +175,7 @@ router.post(
       }
       res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 // @route   DELETE api/posts/comment/:post_id/:comment_id
@@ -189,15 +189,15 @@ router.delete('/comment/:post_id/:comment_id', auth, async (req, res) => {
     }
     // Pull out comment
     const comment = post.comments.find(
-      comment => comment.id === req.params.comment_id
-      );
+      comment => comment.id === req.params.comment_id,
+    );
     if (!comment) {
-        return res.status(404).json({ msg: 'Comment not found' });
-      }
+      return res.status(404).json({ msg: 'Comment not found' });
+    }
 
     // Get index comment
     const removeIndex = post.comments.findIndex(
-      comment => comment.id === req.params.comment_id
+      comment => comment.id === req.params.comment_id,
     );
 
     //Check user  !!User owns this post or this comment can delete

@@ -4,17 +4,21 @@ const { check, validationResult } = require('express-validator');
 const request = require('request');
 const config = require('config');
 
+//Model
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 const Post = require('../../models/Post');
-const auth = require('../../middleware/auth.middle');
+
+//Middelware
+const auth = require('../middleware/auth.middle');
+
 // @route   GET api/profile/me
 // @desc    Get logged in personal profile
 // @access  Private
 router.get('/me', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({
-      user: req.user.id
+      user: req.user.id,
     }).populate('user', ['name', 'avatar']);
 
     if (!profile) {
@@ -41,8 +45,8 @@ router.post(
         .isEmpty(),
       check('skills', 'Skills is required!')
         .not()
-        .isEmpty()
-    ]
+        .isEmpty(),
+    ],
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -59,7 +63,7 @@ router.post(
       status,
       githubusername,
       skills,
-      social
+      social,
     } = req.body;
     // Build profile object
     const profileFields = {};
@@ -68,7 +72,7 @@ router.post(
 
     //Check if fields are null
     const isNull = (...fields) => {
-      fields.forEach((field) => {
+      fields.forEach(field => {
         const value = eval(field);
         if (value) {
           profileFields[field] = value;
@@ -84,11 +88,11 @@ router.post(
       'website',
       'status',
       'githubusername',
-      'location'
+      'location',
     );
 
     if (skills) {
-      profileFields.skills = skills.split(',').map((skill) => skill.trim());
+      profileFields.skills = skills.split(',').map(skill => skill.trim());
     }
     try {
       let profile = await Profile.findOne({ user: req.user.id });
@@ -97,7 +101,7 @@ router.post(
         profile = await Profile.findOneAndUpdate(
           { user: req.user.id },
           { $set: profileFields },
-          { new: true }
+          { new: true },
         );
 
         res.json(profile);
@@ -112,7 +116,7 @@ router.post(
       console.error(err.message);
       res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 // @route   GET api/profile
@@ -134,7 +138,7 @@ router.get('/', async (req, res) => {
 router.get('/user/:user_id', async (req, res) => {
   try {
     const profile = await Profile.findOne({
-      user: req.params.user_id
+      user: req.params.user_id,
     }).populate('user', ['name', 'avatar']);
 
     if (!profile) {
@@ -186,8 +190,8 @@ router.put(
         .isEmpty(),
       check('from', 'From date is required')
         .not()
-        .isEmpty()
-    ]
+        .isEmpty(),
+    ],
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -203,7 +207,7 @@ router.put(
       from,
       to,
       current,
-      description
+      description,
     } = req.body;
 
     const newExp = {
@@ -213,7 +217,7 @@ router.put(
       from,
       to,
       current,
-      description
+      description,
     };
     try {
       const profile = await Profile.findOne({ user: req.user.id });
@@ -226,7 +230,7 @@ router.put(
       console.error(err.message);
       res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 // @route   DELETE api/profile/experience/:exp_id
@@ -237,7 +241,7 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
     const profile = await Profile.findOne({ user: req.user.id });
     // Get remove index
     const removeIndex = profile.experience
-      .map((item) => item._id)
+      .map(item => item._id)
       .indexOf(req.params.exp_id);
 
     if (removeIndex < 0) {
@@ -272,8 +276,8 @@ router.put(
         .isEmpty(),
       check('from', 'From date is required')
         .not()
-        .isEmpty()
-    ]
+        .isEmpty(),
+    ],
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -288,7 +292,7 @@ router.put(
       from,
       to,
       current,
-      description
+      description,
     } = req.body;
 
     const newEdu = {
@@ -298,7 +302,7 @@ router.put(
       from,
       to,
       current,
-      description
+      description,
     };
     try {
       const profile = await Profile.findOne({ user: req.user.id });
@@ -311,7 +315,7 @@ router.put(
       console.error(err.message);
       res.status(500).send('Server Error');
     }
-  }
+  },
 );
 
 // @route   DELETE api/profile/education/:edu_id
@@ -322,7 +326,7 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
     const profile = await Profile.findOne({ user: req.user.id });
     // Get remove index
     const removeIndex = profile.education
-      .map((item) => item._id)
+      .map(item => item._id)
       .indexOf(req.params.edu_id);
 
     if (removeIndex < 0) {
@@ -348,10 +352,10 @@ router.get('/github/:username', (req, res) => {
       uri: `https://api.github.com/users/${
         req.params.username
       }/repos?per_page=5&sort=created:asc&client_id=${config.get(
-        'githubClientId'
+        'githubClientId',
       )}&client_secret=${config.get('githubSecret')}`,
       method: 'GET',
-      headers: { 'user-agent': 'node.js' }
+      headers: { 'user-agent': 'node.js' },
     };
     request(option, (error, response, body) => {
       if (error) console.error(error);

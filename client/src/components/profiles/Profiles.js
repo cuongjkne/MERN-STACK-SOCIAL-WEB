@@ -8,9 +8,9 @@ import ProfileItem from './ProfileItem';
 const Profiles = ({ getProfiles, profile: { profiles, loading } }) => {
   useEffect(() => {
     getProfiles();
-  }, []);
+  }, [getProfiles]);
 
-  const allProfiles = profiles.map((profile) => (
+  const allProfiles = profiles.map(profile => (
     <ProfileItem key={profile._id} profile={profile} />
   ));
 
@@ -18,11 +18,12 @@ const Profiles = ({ getProfiles, profile: { profiles, loading } }) => {
     <Spinner />
   ) : (
     <Fragment>
-      <h1 class='large text-primary'>Developers</h1>
-      <p class='lead'>
-        <i class='fab fa-connectdevelop'></i> Browse and connect with developers
+      <h1 className="large text-primary">Developers</h1>
+      <p className="lead">
+        <i className="fab fa-connectdevelop"></i> Browse and connect with
+        developers
       </p>
-      <div class='profiles'>
+      <div className="profiles">
         {profiles.length > 0 ? allProfiles : <h4>No profiles found...</h4>}
       </div>
     </Fragment>
@@ -31,11 +32,11 @@ const Profiles = ({ getProfiles, profile: { profiles, loading } }) => {
 
 Profiles.propTypes = {
   profile: PropTypes.object.isRequired,
-  getProfiles: PropTypes.func.isRequired
+  getProfiles: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = (state) => ({
-  profile: state.profile
+const mapStateToProps = state => ({
+  profile: state.profile,
 });
 
 export default connect(mapStateToProps, { getProfiles })(Profiles);
