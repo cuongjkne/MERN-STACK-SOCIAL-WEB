@@ -116,13 +116,13 @@ router.put('/like-unlike/:post_id', auth, async (req, res) => {
       //Unlike
       post.likes.splice(removeIndex, 1);
       await post.save();
-      return res.json(post.likes);
+      return res.json(post);
     }
 
     // Like a post
     post.likes.unshift({ user: req.user.id });
     await post.save();
-    res.json(post.likes);
+    res.json(post);
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
